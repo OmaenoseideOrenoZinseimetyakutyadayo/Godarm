@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ラッシュ継続チャレンジ - PayPay獲得</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            --paypay-red: #ff0033;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #09090b;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(255, 0, 51, 0.22) 0%, transparent 55%),
+                radial-gradient(circle at 50% 100%, rgba(234, 179, 8, 0.22) 0%, transparent 55%);
+            color: #ffffff;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .font-num {
+            font-family: 'Orbitron', 'Noto Sans JP', sans-serif;
+        }
+
+        /* 虹色グラデーションアニメーション */
+        @keyframes rainbow-bg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .rainbow-border {
+            background: linear-gradient(270deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8f00ff);
+            background-size: 400% 400%;
+            animation: rainbow-bg 2.5s ease infinite;
+        }
+
+        .rainbow-text {
+            background: linear-gradient(90deg, #ff3366, #ff9933, #ffff33, #33ff66, #33ccff, #cc66ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow-bg 1.8s linear infinite;
+        }
+
+        /* ゴールドテキスト */
+        .gold-text {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.9));
+        }
+
+        /* 画面振動アニメーション（継続確定時） */
+        @keyframes shake-hard {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            10% { transform: translate(-8px, -6px) rotate(-1deg); }
+            20% { transform: translate(8px, 6px) rotate(1deg); }
+            30% { transform: translate(-8px, 6px) rotate(-1deg); }
+            40% { transform: translate(8px, -6px) rotate(1deg); }
+            50% { transform: translate(-6px, -4px) rotate(-0.5deg); }
+            60% { transform: translate(6px, 4px) rotate(0.5deg); }
+            70% { transform: translate(-4px, 4px) rotate(0deg); }
+            80% { transform: translate(4px, -4px) rotate(0deg); }
+            90% { transform: translate(-2px, 2px) rotate(0deg); }
+        }
+
+        .animate-shake {
+            animation: shake-hard 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* 激震（抽選煽り中） */
+        @keyframes rumble {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            25% { transform: translate(-1.5px, -2px) rotate(-0.5deg); }
+            50% { transform: translate(-2px, 0px) rotate(0.5deg); }
+            75% { transform: translate(1.5px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -1px) rotate(-0.5deg); }
+        }
+
+        .animate-rumble {
+            animation: rumble 0.08s infinite;
+        }
+
+        /* カットイン拡大アニメーション */
+        @keyframes pop-in {
+            0% { transform: scale(0.4); opacity: 0; }
+            70% { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .animate-pop-in {
+            animation: pop-in 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* PUSHボタンの立体感と脈動 */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 22px rgba(255, 0, 51, 0.65), 0 0 42px rgba(255, 165, 0, 0.45), inset 0 4px 10px rgba(255,255,255,0.6); transform: scale(1); }
+            50% { box-shadow: 0 0 38px rgba(255, 0, 51, 0.95), 0 0 70px rgba(255, 215, 0, 0.85), inset 0 4px 15px rgba(255,255,255,0.9); transform: scale(1.03); }
+        }
+
+        .push-btn {
+            background: radial-gradient(circle at 30% 30%, #ff4d4d, #cc0000 60%, #660000 100%);
+            border: 4px solid #ffd700;
+            animation: pulse-glow 1.4s infinite ease-in-out;
+            transition: transform 0.08s;
+        }
+
+        .push-btn:active:not(:disabled) {
+            transform: scale(0.94) !important;
+            animation: none;
+        }
+
+        .push-btn:disabled {
+            background: #27272a;
+            border-color: #52525b;
+            box-shadow: none;
+            animation: none;
+            opacity: 0.7;
+        }
+
+        /* パトランプ回転風エフェクト */
+        @keyframes spin-slow {
+            100% { transform: rotate(360deg); }
+        }
+        .patlamp-beam {
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(255, 0, 51, 0.35) 30deg, transparent 60deg, transparent 180deg, rgba(255, 215, 0, 0.35) 210deg, transparent 240deg);
+            animation: spin-slow 2.2s linear infinite;
+        }
+
+        /* スクショカード用シマー（光沢）アニメーション */
+        @keyframes shine-sweep {
+            0% { transform: translateX(-100%) rotate(25deg); }
+            100% { transform: translateX(250%) rotate(25deg); }
+        }
+        .card-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 0;
+            width: 40%;
+            height: 200%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.12), transparent);
+            animation: shine-sweep 4s infinite ease-in-out;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative">
+
+    <!-- フラッシュ演出用オーバーレイ -->
+    <div id="flash-overlay" class="fixed inset-0 pointer-events-none z-50 opacity-0 transition-opacity duration-300"></div>
+
+    <!-- パトランプ背景光（RUSH中表示） -->
+    <div id="rush-bg-effect" class="fixed inset-0 pointer-events-none z-0 hidden overflow-hidden">
+        <div class="absolute -inset-[50%] patlamp-beam opacity-60"></div>
+    </div>
+
+    <!-- ヘッダー -->
+    <header class="relative z-10 bg-zinc-950/90 border-b border-zinc-800 px-4 py-2.5 backdrop-blur-md">
+        <div class="max-w-lg mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#ff0033] to-amber-500 flex items-center justify-center shadow-lg shadow-red-600/30">
+                    <i class="fa-solid fa-bolt text-white text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm sm:text-base font-black tracking-wider text-white leading-tight">
+                        RUSH継続チャレンジ
+                    </h1>
+                    <p class="text-[10px] text-amber-400 font-bold">1継続＝10円 ／ 初回保証なし・継続率75.0%（平均3連）</p>
+                </div>
+            </div>
+
+            <!-- ミュート切り替えボタン -->
+            <button id="sound-toggle-btn" class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-700 hover:border-zinc-500 flex items-center justify-center text-zinc-200 transition" title="効果音 ON/OFF">
+                <i id="sound-icon" class="fa-solid fa-volume-high text-sm"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main id="app-container" class="relative z-10 flex-1 w-full max-w-lg mx-auto px-4 py-3 sm:py-5 flex flex-col justify-center gap-4">
+
+        <!-- ==========================================
+             ゲームプレイ画面（スタート・抽選・継続中）
+             ========================================== -->
+        <div id="play-view" class="flex flex-col gap-4">
+            
+            <!-- ダッシュボード：現在の継続数 & 獲得PayPay金額 -->
+            <section class="rounded-2xl p-[2px] bg-gradient-to-r from-[#ff0033] via-amber-400 to-[#ff0033] shadow-xl shadow-red-950/50">
+                <div class="bg-zinc-950 rounded-[14px] p-4 relative overflow-hidden">
+                    <!-- 背景装飾 -->
+                    <div class="absolute right-2 top-1 opacity-10 pointer-events-none">
+                        <i class="fa-solid fa-yen-sign text-7xl text-red-500"></i>
+                    </div>
+
+                    <div class="grid grid-cols-12 gap-2 items-center">
+                        <!-- 左側：継続数 -->
+                        <div class="col-span-5 border-r border-zinc-800 pr-2 text-center">
+                            <div class="text-[10px] sm:text-xs font-black text-amber-400 tracking-widest mb-0.5">
+                                CURRENT RUSH
+                            </div>
+                            <div class="flex items-baseline justify-center gap-1">
+                                <span id="current-streak" class="font-num text-4xl sm:text-5xl font-black gold-text">0</span>
+                                <span class="text-base sm:text-lg font-black text-amber-200">連</span>
+                            </div>
+                            <div class="mt-1 inline-block bg-zinc-900 border border-zinc-700 rounded px-2 py-0.5 text-[10px] text-zinc-300 font-bold">
+                                継続率 <span class="font-num text-red-400">75.0%</span>
+                            </div>
+                        </div>
+
+                        <!-- 右側：獲得PayPay残高 -->
+                        <div class="col-span-7 pl-2">
+                            <div class="flex items-center gap-1.5 mb-1">
+                                <span class="bg-[#ff0033] text-white text-[10px] font-black px-1.5 py-0.5 rounded tracking-tighter">
+                                    PayPay
+                                </span>
+                                <span class="text-[11px] text-zinc-300 font-bold">現在の獲得金額</span>
+                            </div>
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-xl sm:text-2xl font-black text-[#ff0033]">¥</span>
+                                <span id="current-amount" class="font-num text-4xl sm:text-5xl font-black text-white tracking-tight">0</span>
+                                <span class="text-sm font-bold text-zinc-300">円</span>
+                            </div>
+                            <div class="text-[11px] text-amber-300/90 font-bold mt-1">
+                                <i class="fa-solid fa-coins mr-1"></i>1継続 ＝ 10円（PayPay）
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- メイン演出ステージ（液晶画面風） -->
+            <section id="stage-screen" class="relative rounded-2xl border-2 border-zinc-800 bg-zinc-900/95 min-h-[260px] sm:min-h-[290px] flex flex-col items-center justify-center p-5 text-center overflow-hidden shadow-2xl">
+                
+                <!-- ステージ四隅の装飾 -->
+                <div class="absolute top-2.5 left-2.5 w-3.5 h-3.5 border-t-2 border-l-2 border-amber-400/70"></div>
+                <div class="absolute top-2.5 right-2.5 w-3.5 h-3.5 border-t-2 border-r-2 border-amber-400/70"></div>
+                <div class="absolute bottom-2.5 left-2.5 w-3.5 h-3.5 border-b-2 border-l-2 border-amber-400/70"></div>
+                <div class="absolute bottom-2.5 right-2.5 w-3.5 h-3.5 border-b-2 border-r-2 border-amber-400/70"></div>
+
+                <!-- 状態1: スタート画面 -->
+                <div id="state-idle" class="w-full flex flex-col items-center justify-center space-y-3">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/15 border border-red-400/40 text-red-300 text-xs font-black">
+                        <i class="fa-solid fa-fire text-red-500"></i>
+                        初回保証なし！1連目からガチ抽選！
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-white leading-snug">
+                        75%を突破し続けて<br><span class="gold-text text-3xl sm:text-4xl">PayPayを掴み取れ！</span>
+                    </h2>
+                    <div class="bg-zinc-950/90 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs sm:text-sm space-y-1 w-full max-w-xs">
+                        <div class="flex justify-between">
+                            <span class="text-zinc-400">獲得レート：</span>
+                            <span class="font-black text-white">1継続 ＝ <span class="text-[#ff0033]">10円</span>（PayPay）</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-zinc-400">継続率：</span>
+                            <span class="font-black text-amber-400">75.0%（平均 3.0連）</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-zinc-400">初回保証：</span>
+                            <span class="font-black text-zinc-300">なし（0連終了あり）</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-zinc-400">挑戦回数：</span>
+                            <span class="font-black text-red-400">お一人様 1回限り</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 状態2: 抽選演出中（煽り） -->
+                <div id="state-drawing" class="hidden w-full flex flex-col items-center justify-center space-y-4">
+                    <div id="tension-text" class="text-2xl sm:text-4xl font-black tracking-widest text-amber-400 animate-pulse">
+                        継続なるか…！？
+                    </div>
+                    
+                    <!-- テンションゲージ -->
+                    <div class="w-full max-w-xs sm:max-w-sm bg-zinc-950 h-7 rounded-full p-1 border border-zinc-700 overflow-hidden relative">
+                        <div id="tension-bar" class="h-full rounded-full bg-gradient-to-r from-blue-500 via-amber-400 to-red-600 w-0 transition-all duration-75"></div>
+                        <div class="absolute inset-0 flex items-center justify-center text-xs font-black tracking-widest text-white drop-shadow">
+                            JUDGING...
+                        </div>
+                    </div>
+
+                    <!-- 期待度示唆オーラ -->
+                    <div id="aura-indicator" class="text-xs sm:text-sm font-black px-4 py-1.5 rounded-full bg-zinc-800 text-zinc-300">
+                        オーラ：白
+                    </div>
+                </div>
+
+                <!-- 状態3: ラッシュ突入＆継続確定！（カットイン演出） -->
+                <div id="state-success" class="hidden w-full flex flex-col items-center justify-center space-y-2.5">
+                    <div id="success-sub-badge" class="text-xs sm:text-sm font-black tracking-widest text-amber-300 uppercase">
+                        ★ RUSH CONTINUE ★
+                    </div>
+                    <div id="success-main-title" class="text-4xl sm:text-5xl font-black rainbow-text tracking-tighter py-1 animate-pop-in">
+                        継続！！＋10円！
+                    </div>
+                    <div id="success-reward-pop" class="inline-flex items-center gap-1.5 bg-[#ff0033] text-white font-num font-black text-lg sm:text-xl px-5 py-1.5 rounded-full shadow-lg shadow-red-600/50 border border-white/30">
+                        <span>+10円</span>
+                        <span class="text-xs font-bold">GET!</span>
+                    </div>
+                    <p id="success-next-hint" class="text-xs sm:text-sm text-zinc-200 font-bold pt-1">
+                        次なる継続（2連目）を目指してPUSH！
+                    </p>
+                </div>
+
+            </section>
+
+            <!-- アクションボタンエリア -->
+            <section class="flex flex-col items-center justify-center pt-1">
+                <button id="push-btn" class="push-btn w-full max-w-sm py-4 sm:py-5 rounded-2xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden">
+                    <span id="push-main-label" class="text-2xl sm:text-3xl font-black tracking-widest text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                        RUSHスタート！
+                    </span>
+                    <span id="push-subtext" class="text-xs font-bold text-amber-200 tracking-wider mt-0.5">
+                        1連目（継続率75.0%）の抽選へ！
+                    </span>
+                </button>
+            </section>
+        </div>
+
+        <!-- ==========================================
+             リザルト画面（1人1回制限＆スクショ映え特化レイアウト）
+             ※再挑戦ボタンなし
+             ========================================== -->
+        <div id="result-view" class="hidden flex flex-col items-center justify-center gap-3">
+            
+            <!-- 再アクセス時に表示される「プレイ済み」案内バッジ -->
+            <div id="already-played-badge" class="hidden w-full bg-red-950/90 border border-red-500/80 text-red-200 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-black text-center shadow-lg">
+                <i class="fa-solid fa-lock mr-1.5 text-red-400"></i>※この端末ではすでにプレイ済みです（この画面をスクショして送ってね！）
+            </div>
+
+            <!-- スクショ撮影対象カード -->
+            <div class="w-full rounded-3xl p-[3px] rainbow-border shadow-2xl shadow-red-600/30">
+                <div class="relative bg-zinc-950 rounded-[21px] p-5 sm:p-6 text-center overflow-hidden card-shine flex flex-col items-center">
+                    
+                    <!-- 背景の装飾アイコン -->
+                    <div class="absolute -top-6 -right-6 opacity-10 pointer-events-none">
+                        <i class="fa-solid fa-crown text-9xl text-amber-400"></i>
+                    </div>
+                    <div class="absolute -bottom-6 -left-6 opacity-10 pointer-events-none">
+                        <i class="fa-solid fa-yen-sign text-9xl text-[#ff0033]"></i>
+                    </div>
+
+                    <!-- 1. RESULT 派手なヘッダー -->
+                    <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-zinc-900 border border-amber-500/50 mb-2">
+                        <span class="w-2 h-2 rounded-full bg-[#ff0033]"></span>
+                        <span class="font-num text-sm sm:text-base font-black tracking-[0.25em] gold-text">
+                            RESULT
+                        </span>
+                        <span class="w-2 h-2 rounded-full bg-[#ff0033]"></span>
+                    </div>
+
+                    <div class="text-xs font-bold text-zinc-400 mb-3">
+                        RUSH継続チャレンジ 最終結果
+                    </div>
+
+                    <!-- 2. 最終継続回数 -->
+                    <div class="w-full bg-zinc-900/90 border border-zinc-800 rounded-2xl py-3.5 px-4 mb-3">
+                        <div class="text-xs font-bold text-amber-400 mb-0.5">最終継続記録</div>
+                        <div class="flex items-baseline justify-center gap-1">
+                            <span id="res-streak" class="font-num text-5xl sm:text-6xl font-black gold-text">3</span>
+                            <span class="text-2xl sm:text-3xl font-black text-white">連</span>
+                        </div>
+                    </div>
+
+                    <!-- 3. 獲得金額（PayPay） -->
+                    <div class="w-full bg-gradient-to-r from-[#ff0033]/20 via-[#ff0033]/30 to-[#ff0033]/20 border-2 border-[#ff0033] rounded-2xl py-4 px-4 mb-4 shadow-lg shadow-red-950/50">
+                        <div class="inline-flex items-center gap-1.5 bg-[#ff0033] text-white text-xs font-black px-2.5 py-0.5 rounded-full mb-1">
+                            <span>獲得PayPay</span>
+                        </div>
+                        <div class="flex items-baseline justify-center gap-1">
+                            <span id="res-amount" class="font-num text-4xl sm:text-5xl font-black text-white drop-shadow">30</span>
+                            <span class="text-xl sm:text-2xl font-black text-amber-300">円</span>
+                        </div>
+                    </div>
+
+                    <!-- 4. スクショ案内メッセージ -->
+                    <div class="w-full bg-amber-400 text-zinc-950 rounded-xl py-2.5 px-3 font-black text-sm sm:text-base shadow-md mb-4 flex items-center justify-center gap-1.5 animate-pulse">
+                        <span>この画面をスクショして送ってね！📸</span>
+                    </div>
+
+                    <!-- 5. 証拠用のプレイ日時・固有ID -->
+                    <div class="w-full bg-zinc-900/80 border border-zinc-800 rounded-xl px-3.5 py-2 text-[11px] sm:text-xs text-zinc-400 font-num flex flex-col gap-1">
+                        <div class="flex justify-between items-center">
+                            <span class="text-zinc-500">PLAY DATE:</span>
+                            <span id="res-timestamp" class="text-zinc-200 font-bold">2026/11/25 14:13:00</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-zinc-500">RESULT ID:</span>
+                            <span id="res-id" class="text-amber-400 font-bold tracking-wider">R-XXXXXX</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- フッター -->
+    <footer class="relative z-10 text-center py-2.5 px-4 text-[10px] text-zinc-500">
+        ※1継続＝10円固定 ／ 初回保証なし・継続率75.0%（平均3.0連・期待値30円）
+    </footer>
+
+    <script>
+        /**
+         * Web Audio API を使ったパチンコ風効果音エンジン
+         */
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+                this.muted = false;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        this.ctx = new AudioContext();
+                    }
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            toggleMute() {
+                this.muted = !this.muted;
+                return this.muted;
+            }
+
+            // PUSHボタン押下音
+            playPush() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.exponentialRampToValueAtTime(45, now + 0.14);
+
+                gain.gain.setValueAtTime(0.45, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.14);
+            }
+
+            // ドラムロール・煽り音
+            playTick(progress) {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                const freq = 320 + progress * 520;
+                osc.frequency.setValueAtTime(freq, now);
+
+                gain.gain.setValueAtTime(0.14, now);
+                gain.gain.exponentialRampToValueAtTime(0.005, now + 0.05);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            }
+
+            // 継続確定「キュイン！」音
+            playKyuin() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+
+                // 高音スイープ
+                const osc1 = this.ctx.createOscillator();
+                const gain1 = this.ctx.createGain();
+                osc1.type = 'sawtooth';
+                osc1.frequency.setValueAtTime(900, now);
+                osc1.frequency.exponentialRampToValueAtTime(2800, now + 0.12);
+                osc1.frequency.setValueAtTime(2400, now + 0.13);
+                osc1.frequency.exponentialRampToValueAtTime(3400, now + 0.55);
+
+                gain1.gain.setValueAtTime(0.28, now);
+                gain1.gain.exponentialRampToValueAtTime(0.005, now + 0.6);
+
+                osc1.connect(gain1);
+                gain1.connect(this.ctx.destination);
+                osc1.start(now);
+                osc1.stop(now + 0.6);
+
+                // キラキラ和音
+                const notes = [1046.5, 1318.5, 1568.0, 2093.0];
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+
+                    gain.gain.setValueAtTime(0.18, now + idx * 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.005, now + 0.65);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + idx * 0.05);
+                    osc.stop(now + 0.65);
+                });
+            }
+
+            // 終了音
+            playEnd() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                const notes = [440, 392, 349.23, 293.66];
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.14);
+
+                    gain.gain.setValueAtTime(0.22, now + idx * 0.14);
+                    gain.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.14 + 0.35);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + idx * 0.14);
+                    osc.stop(now + idx * 0.14 + 0.35);
+                });
+            }
+        }
+
+        /**
+         * 固定スペック＆ストレージ定数
+         * - 1継続 = 10円固定
+         * - 初回保証なし + 継続率 75.0% (0.75) -> 平均継続回数 3.0連（理論期待値 30円）
+         */
+        const FIXED_REWARD_PER_HIT = 10;
+        const FIXED_CONTINUE_PROB = 0.75;
+        const STORAGE_KEY = 'rush_paypay_once_v1';
+
+        const sound = new SoundEngine();
+
+        // アプリ状態
+        const state = {
+            status: 'IDLE', // IDLE | DRAWING | SUCCESS | GAMEOVER
+            currentStreak: 0,
+            currentAmount: 0
+        };
+
+        // DOM要素のキャッシュ
+        const el = {
+            appContainer: document.getElementById('app-container'),
+            flashOverlay: document.getElementById('flash-overlay'),
+            rushBgEffect: document.getElementById('rush-bg-effect'),
+            soundToggleBtn: document.getElementById('sound-toggle-btn'),
+            soundIcon: document.getElementById('sound-icon'),
+
+            playView: document.getElementById('play-view'),
+            resultView: document.getElementById('result-view'),
+            alreadyPlayedBadge: document.getElementById('already-played-badge'),
+
+            currentStreak: document.getElementById('current-streak'),
+            currentAmount: document.getElementById('current-amount'),
+            stageScreen: document.getElementById('stage-screen'),
+
+            stateIdle: document.getElementById('state-idle'),
+            stateDrawing: document.getElementById('state-drawing'),
+            stateSuccess: document.getElementById('state-success'),
+
+            tensionText: document.getElementById('tension-text'),
+            tensionBar: document.getElementById('tension-bar'),
+            auraIndicator: document.getElementById('aura-indicator'),
+
+            successSubBadge: document.getElementById('success-sub-badge'),
+            successMainTitle: document.getElementById('success-main-title'),
+            successNextHint: document.getElementById('success-next-hint'),
+
+            pushBtn: document.getElementById('push-btn'),
+            pushMainLabel: document.getElementById('push-main-label'),
+            pushSubtext: document.getElementById('push-subtext'),
+
+            resStreak: document.getElementById('res-streak'),
+            resAmount: document.getElementById('res-amount'),
+            resTimestamp: document.getElementById('res-timestamp'),
+            resId: document.getElementById('res-id')
+        };
+
+        // 結果データの保存（1人1回制限）
+        function saveResultOnce(payload) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+            } catch (e) {
+                console.warn('localStorageへの保存に失敗しました:', e);
+            }
+        }
+
+        // 保存済み結果の読み込み
+        function loadSavedResult() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return null;
+                return JSON.parse(raw);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // 固有IDの生成
+        function generateResultId() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return `R-${code}`;
+        }
+
+        // 現在日時のフォーマット
+        function formatNowString() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
+            return `${y}/${m}/${d} ${hh}:${mm}:${ss}`;
+        }
+
+        // 演出用エフェクト
+        function triggerFlash(colorClass, duration = 350) {
+            el.flashOverlay.className = `fixed inset-0 pointer-events-none z-50 transition-opacity duration-300 ${colorClass} opacity-80`;
+            setTimeout(() => {
+                el.flashOverlay.classList.remove('opacity-80');
+                el.flashOverlay.classList.add('opacity-0');
+            }, duration);
+        }
+
+        function triggerShake() {
+            el.appContainer.classList.remove('animate-shake');
+            void el.appContainer.offsetWidth;
+            el.appContainer.classList.add('animate-shake');
+        }
+
+        function triggerPopIn() {
+            el.successMainTitle.classList.remove('animate-pop-in');
+            void el.successMainTitle.offsetWidth;
+            el.successMainTitle.classList.add('animate-pop-in');
+        }
+
+        // プレイ画面のUI更新
+        function updateUI() {
+            el.currentStreak.textContent = state.currentStreak;
+            el.currentAmount.textContent = state.currentAmount.toLocaleString();
+
+            if (state.currentStreak > 0 && state.status !== 'GAMEOVER') {
+                el.rushBgEffect.classList.remove('hidden');
+            } else {
+                el.rushBgEffect.classList.add('hidden');
+            }
+
+            el.stateIdle.classList.add('hidden');
+            el.stateDrawing.classList.add('hidden');
+            el.stateSuccess.classList.add('hidden');
+
+            if (state.status === 'IDLE') {
+                el.stateIdle.classList.remove('hidden');
+                el.pushBtn.disabled = false;
+                el.pushMainLabel.textContent = 'RUSHスタート！';
+                el.pushSubtext.textContent = '1連目（継続率75.0%）の抽選へ！';
+                el.stageScreen.className = 'relative rounded-2xl border-2 border-zinc-800 bg-zinc-900/95 min-h-[260px] sm:min-h-[290px] flex flex-col items-center justify-center p-5 text-center overflow-hidden shadow-2xl';
+            } else if (state.status === 'DRAWING') {
+                el.stateDrawing.classList.remove('hidden');
+                el.pushBtn.disabled = true;
+                el.pushMainLabel.textContent = '抽選中...';
+                el.pushSubtext.textContent = `${state.currentStreak + 1}連目の運命を判定中！`;
+            } else if (state.status === 'SUCCESS') {
+                el.stateSuccess.classList.remove('hidden');
+                el.pushBtn.disabled = false;
+                el.pushMainLabel.textContent = 'PUSH';
+                el.pushSubtext.textContent = `${state.currentStreak + 1}連目（継続率 75.0%）に挑戦！`;
+                el.stageScreen.className = 'relative rounded-2xl border-2 border-amber-400 bg-gradient-to-b from-zinc-900 via-red-950/35 to-zinc-900 min-h-[260px] sm:min-h-[290px] flex flex-col items-center justify-center p-5 text-center overflow-hidden shadow-lg shadow-amber-500/25';
+            }
+        }
+
+        // ボタン押下時のハンドラ（初回保証なし：スタート時から即1連目の抽選を実行）
+        function handlePushAction() {
+            if (state.status === 'DRAWING' || state.status === 'GAMEOVER') return;
+            executeContinueDraw();
+        }
+
+        // 継続抽選演出（1連目〜すべて75.0%で抽選）
+        function executeContinueDraw() {
+            sound.playPush();
+            state.status = 'DRAWING';
+            updateUI();
+
+            // 継続率 75.0% (0.75) で抽選
+            const isWin = Math.random() < FIXED_CONTINUE_PROB;
+
+            // 期待度示唆オーラの決定（白〜青〜黄〜緑〜赤〜虹）
+            const auras = [
+                { label: 'オーラ：白（チャンス）', style: 'bg-zinc-800 text-zinc-200 border border-zinc-600' },
+                { label: 'オーラ：青（期待度・低）', style: 'bg-blue-950 text-blue-300 border border-blue-500' },
+                { label: 'オーラ：黄（期待度・中）', style: 'bg-yellow-950 text-yellow-300 border border-yellow-500' },
+                { label: 'オーラ：緑（期待度・高）', style: 'bg-emerald-950 text-emerald-300 border border-emerald-500' },
+                { label: 'オーラ：赤（激アツ！！）', style: 'bg-red-950 text-red-300 border border-red-500 animate-pulse' },
+                { label: 'オーラ：虹（超激アツ！？）', style: 'rainbow-border text-white font-black shadow-lg' }
+            ];
+
+            let auraIndex = 0;
+            const r = Math.random();
+            if (isWin) {
+                if (r < 0.16) auraIndex = 5;      // 虹
+                else if (r < 0.42) auraIndex = 4; // 赤
+                else if (r < 0.68) auraIndex = 3; // 緑
+                else if (r < 0.85) auraIndex = 2; // 黄
+                else if (r < 0.95) auraIndex = 1; // 青
+                else auraIndex = 0;               // 白
+            } else {
+                // 終了時は虹は出現しない
+                if (r < 0.10) auraIndex = 4;
+                else if (r < 0.30) auraIndex = 3;
+                else if (r < 0.58) auraIndex = 2;
+                else if (r < 0.82) auraIndex = 1;
+                else auraIndex = 0;
+            }
+
+            el.auraIndicator.textContent = auras[auraIndex].label;
+            el.auraIndicator.className = `text-xs sm:text-sm font-black px-4 py-1.5 rounded-full ${auras[auraIndex].style}`;
+
+            // 煽りテキスト
+            const nextNum = state.currentStreak + 1;
+            const tensionPhrases = [
+                `${nextNum}連目 75%突破なるか…！？`,
+                '運命のジャッジ…！',
+                '気合を入れろ！！',
+                '壁を突破せよ…！！'
+            ];
+            el.tensionText.textContent = tensionPhrases[Math.floor(Math.random() * tensionPhrases.length)];
+
+            // テンションゲージ進行アニメーション
+            el.stageScreen.classList.add('animate-rumble');
+            el.tensionBar.style.width = '0%';
+
+            const totalSteps = 18;
+            let step = 0;
+            const interval = setInterval(() => {
+                step++;
+                const progress = step / totalSteps;
+                el.tensionBar.style.width = `${Math.min(100, Math.round(progress * 100))}%`;
+                sound.playTick(progress);
+
+                if (step >= totalSteps) {
+                    clearInterval(interval);
+                    el.stageScreen.classList.remove('animate-rumble');
+                    setTimeout(() => {
+                        resolveDraw(isWin);
+                    }, 180);
+                }
+            }, 65);
+        }
+
+        // 抽選結果の確定処理
+        function resolveDraw(isWin) {
+            if (isWin) {
+                // 継続成功！
+                state.currentStreak += 1;
+                state.currentAmount += FIXED_REWARD_PER_HIT;
+                state.status = 'SUCCESS';
+
+                const winBanners = ['継続確定！！＋10円！', '75%突破！！＋10円！'];
+                el.successSubBadge.textContent = `★ ${state.currentStreak}連目達成 ★`;
+                el.successMainTitle.textContent = state.currentStreak === 1 ? '1連目突破！！＋10円！' : winBanners[Math.floor(Math.random() * winBanners.length)];
+                el.successNextHint.textContent = `次なる継続（${state.currentStreak + 1}連目）を目指してPUSH！`;
+
+                sound.playKyuin();
+                triggerFlash('bg-amber-300', 450);
+                triggerShake();
+                triggerPopIn();
+                updateUI();
+            } else {
+                // 継続失敗（ラッシュ終了 -> 0連でも結果を保存してリザルト画面へ）
+                finishAndSaveResult();
+            }
+        }
+
+        // ラッシュ終了時の保存＆リザルト遷移
+        function finishAndSaveResult() {
+            state.status = 'GAMEOVER';
+            sound.playEnd();
+            triggerFlash('bg-red-900', 300);
+
+            const payload = {
+                streak: state.currentStreak,
+                amount: state.currentAmount,
+                timestamp: formatNowString(),
+                id: generateResultId()
+            };
+
+            saveResultOnce(payload);
+            showResultScreen(payload, false);
+        }
+
+        // リザルト画面の表示
+        function showResultScreen(payload, isAlreadyPlayed) {
+            el.rushBgEffect.classList.add('hidden');
+            el.playView.classList.add('hidden');
+            el.resultView.classList.remove('hidden');
+
+            el.resStreak.textContent = payload.streak;
+            el.resAmount.textContent = Number(payload.amount).toLocaleString();
+            el.resTimestamp.textContent = payload.timestamp;
+            el.resId.textContent = payload.id;
+
+            if (isAlreadyPlayed) {
+                el.alreadyPlayedBadge.classList.remove('hidden');
+            } else {
+                el.alreadyPlayedBadge.classList.add('hidden');
+            }
+        }
+
+        // イベントリスナー登録
+        el.pushBtn.addEventListener('click', handlePushAction);
+
+        el.soundToggleBtn.addEventListener('click', () => {
+            const muted = sound.toggleMute();
+            el.soundIcon.className = muted
+                ? 'fa-solid fa-volume-xmark text-sm text-zinc-500'
+                : 'fa-solid fa-volume-high text-sm text-amber-400';
+        });
+
+        // キーボード操作（Space / EnterでPUSH）
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'Enter') {
+                if (state.status !== 'GAMEOVER' && !el.pushBtn.disabled) {
+                    e.preventDefault();
+                    handlePushAction();
+                }
+            }
+        });
+
+        // 起動時にプレイ済みデータをチェック
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = loadSavedResult();
+            if (saved) {
+                state.status = 'GAMEOVER';
+                showResultScreen(saved, true);
+            } else {
+                updateUI();
+            }
+        });
+    </script>
+</body>
+</html>
